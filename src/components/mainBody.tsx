@@ -6,6 +6,8 @@ import Home from '../pages/Home';
 import About from '../pages/About';
 
 
+
+
 interface MainBodyProps {
     currentPage: Page;
 }
