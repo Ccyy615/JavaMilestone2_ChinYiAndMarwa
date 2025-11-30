@@ -1,42 +1,250 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    background-color:White;
+    padding: 20px;
+    min-height: 100vh;
+    width: 100%;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+    filter: drop-shadow(0 0 2em #603189aa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.container {
+    background: #ab85da;
+    /*max-width: 1000px;*/
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+section {
+    text-align: center;
+    width: 100%;
+    
+}
+
+/* MENU (NAVIGATION) ------------------------------------------------- */
+
+.menu ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.menu button {
+  padding: 10px 18px;
+  background: #526af2;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.menu button:hover {
+  background: #d5dae2;
+}
+
+.menu button.active {
+  background: #526af2;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 3px 10px rgba(82, 106, 242, 0.3);
+}
+
+
+
+.main-body {
+  padding: 20px 10px;
+}
+
+.main-body h2 {
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  color: #374151;
+}
+
+.table-container {
+    padding: 25px;
+}
+
+.table-container h2 {
+    color: #004f9f;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #98acc7;
+}
+td {
+    color: #222;
+}
+
+th {
+    background-color: #eaf1f8;
+    color: #004f9f;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+tr:hover {
+    background-color: #f9fcff;
+}
+
+
+/* FORM -------------------------------------------------------------- */
+
+.form-container{
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+
+}
+
+.btn-submit{
+  display: block;
+  margin: auto;
+  height: auto;
+}
+
+.car-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.car-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.car-form input,
+.car-form select {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: rgb(136, 149, 168);
+  font-size: 0.9rem;
+}
+
+.car-form button {
+  grid-column: span 2;
+  padding: 12px;
+  background: #526af2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.car-form button:hover {
+  background: #3f55d4;
+}
+
+/*passenger*/
+
+.passenger-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.passenger-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.passenger-form input,
+.passenger-form select {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: rgb(136, 149, 168);
+  font-size: 0.9rem;
+}
+
+.passenger-form button {
+  grid-column: span 2;
+  padding: 12px;
+  background: #526af2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.passenger-form button:hover {
+  background: #3f55d4;
+}
+
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #4f1b80;
+    color: #fff;
+    font-size: 0.9rem;
+    border-top: 2px solid #36007d;
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
 }
