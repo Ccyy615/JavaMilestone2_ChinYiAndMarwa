@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { apiGet, apiPost, apiPut, apiDelete } from "../api/api";
 import type {
     PassengerRequestDTO,
@@ -47,7 +47,7 @@ export default function ManagePassengers() {
             setLoading(false);
         }
     }
-    ////// name===age
+
     function handleChange(e: any) {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -129,9 +129,76 @@ export default function ManagePassengers() {
             {loading && <p>Loading passengers...</p>}
 
             {/* PASSENGERS TABLE */}
+
+            <table className="passengers-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {passengers.map(passenger => (
+                        <tr key={passenger.passengerId}>
+                            <td>{passenger.passengerId}</td>
+                            <td>{passenger.firstName}</td>
+                            <td>{passenger.lastName}</td>
+
+                            <td>
+                                <button
+                                    className="editButton"
+                                    onClick={() => handleEdit(passenger)}
+                                    style={{ color: "green" }}
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    className="deleteButton"
+                                    onClick={() => handleDelete(passenger.passengerId)}
+                                    style={{ color: "red" }}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
                                  
 
             {/* FORM */}
+
+            <h3>{formMode === "create" ? "Add New Passenger" : "Edit Passenger"}</h3>
+
+            <form onSubmit={handleSubmit} className="passenger-form">
+                <input
+                    type="text"
+                    name="PassengerFirstName"
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
+                    type="text"
+                    name="PassengerLastName"
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                />
+
+                
+
+                <button type="submit" className="btn-submit">
+                    {formMode === "create" ? "Add Passenger" : "Update Passenger"}
+                </button>
+            </form>
+
             
         </section>
     );
