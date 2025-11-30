@@ -1,8 +1,8 @@
 export default function Header() {
     return (
-        <header>
+        <section>
             <h1>Flights & Passenger</h1>
             <p className="subtitle">Manage flignt and passengers</p>
-        </header>
+        </section>
     );
 }

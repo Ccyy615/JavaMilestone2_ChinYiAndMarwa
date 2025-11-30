@@ -38,7 +38,7 @@ export interface PassengerRequestDTO{
     numOfBaggage:number;
 }
 
-export interface PassengerReesponsetDTO{
+export interface PassengerResponseDTO{
     passengerId:number;
     firstName:string;
     lastName:string;
