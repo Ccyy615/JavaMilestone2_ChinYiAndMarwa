@@ -16,20 +16,25 @@
   transition: filter 300ms;
 }
 
-/*.logo:hover {
+.logo:hover {
     filter: drop-shadow(0 0 2em #603189aa);
 }
 .logo.react:hover {
     filter: drop-shadow(0 0 2em #61dafbaa);
 }
-*/
+
 .container {
   background: #ab85da;
-  /*max-width: 1000px;*/
   width: 100%;
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+}
+
+.herder-section {
+  text-align: center;
+  width: 100%;
+  margin-left: auto;
 }
 
 .subtitle {
@@ -37,12 +42,7 @@
   opacity: 0.9;
 }
 
-section {
-  text-align: center;
-  width: 100%;
-  background-image: url('../assets/flights.png');
 
-}
 
 /* MENU (NAVIGATION) ------------------------------------------------- */
 
@@ -76,7 +76,7 @@ section {
 }
 
 
-
+/*main*/
 .main-body {
   padding: 20px 10px;
 }
@@ -87,12 +87,17 @@ section {
   color: #374151;
 }
 
-.passengerSearch input {
+.passenger-content-section {
+  text-align: center;
   width: 100%;
-  padding: 10px 12px;
+}
+
+.passengerSearch input {
+  width: 50%;
+  padding: 10px 12px 12px 10px;
+  margin: auto;
   font-size: 1rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
 }
 
 /*----table----*/
@@ -238,16 +243,18 @@ tr:hover {
   background: #3f55d4;
 }
 
-
-footer {
+.passenger-pagination-btn {
+  margin-top: 12px;
+  margin-left: 12px;
+  margin-right: 12px;
+  display: block;
   text-align: center;
-  padding: 15px;
-  background-color: #4f1b80;
-  color: #fff;
-  font-size: 0.9rem;
-  border-top: 2px solid #36007d;
+  gap: 12;
 }
 
+.add-passenger-btn {
+  display: block;
+}
 
 /*--------passenger mondal------------*/
 
@@ -321,6 +328,15 @@ footer {
   display: flex;
   gap: 10px;
   margin-top: 15px;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #4f1b80;
+  color: #fff;
+  font-size: 0.9rem;
+  border-top: 2px solid #36007d;
 }
 
 

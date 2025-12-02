@@ -187,17 +187,15 @@ export default function ManagePassengers() {
     }
 
     return (
-        <section>
+        <section className="passenger-content-section">
             <div>
                 <h2>Passengers</h2>
-                <button onClick={openAddModal}>
-                    + Add Passenger
-                </button>
+
             </div>
 
             <div className="passengerSearch">
                 <input
-                
+
                     placeholder="Search passengers..."
                     value={search}
                     onChange={e => {
@@ -206,11 +204,11 @@ export default function ManagePassengers() {
                     }}
                 />
             </div>
-                <div>
-                    {loading && <small>Loading…</small>}
-                    {error && <small >error</small>}
-                </div>
-            
+            <div>
+                {loading && <small>Loading…</small>}
+                {error && <small style={{ color: "red" }}>error</small>}
+            </div>
+
 
             <table className="passengers-table">
                 <thead>
@@ -250,17 +248,21 @@ export default function ManagePassengers() {
             </table>
 
             {/* pagination */}
-            <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
+            <div className="passenger-pagination-btn">
                 <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
                     Previous
                 </button>
                 <span>
-                    Page {page} / {totalPages}
+                    &nbsp;&nbsp;Page {page} / {totalPages}&nbsp;&nbsp;
                 </span>
                 <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>
                     Next
                 </button>
             </div>
+
+            <button className="add-passenger-btn" onClick={openAddModal}>
+                + Add Passenger
+            </button>
 
             {showModal && (
                 <div className="Pmodal-overlay">
@@ -389,6 +391,7 @@ export default function ManagePassengers() {
                     </div>
                 </div>
             )}
+
 
         </section>
     );
