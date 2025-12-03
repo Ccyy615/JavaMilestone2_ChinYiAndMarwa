@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { apiGet, apiPost, apiPut, apiDelete } from "../api/api";
 import type {
-    PassengerRequestDTO,
-    PassengerResponseDTO
-} from "../models/models";
+     PassengerRequestDTO, 
+     PassengerResponseDTO 
+    } from "../models/models";
 
 type Mode = "create" | "edit";
 
@@ -19,10 +19,10 @@ const emptyPassenger: PassengerRequestDTO = {
     passportExpiryDate: "",
     creditCardNumber: "",
     numOfBaggage: 0,
+    flightId: 0,
 };
 
 export default function ManagePassengers() {
-
     const [passengers, setPassengers] = useState<PassengerResponseDTO[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -44,14 +44,17 @@ export default function ManagePassengers() {
         try {
             setLoading(true);
             setError(null);
-            const data = (await apiGet("/passengers")) as any[];
 
-            const minimal = (data || []).map(d => ({
+            const data = await apiGet("/passengers");
+
+            const passengersData = (data as any[]).map(d => ({
                 passengerId: d.passengerId,
                 firstName: d.firstName,
                 lastName: d.lastName,
             })) as PassengerResponseDTO[];
-            setPassengers(minimal);
+
+            setPassengers(passengersData);
+
         } catch (err) {
             console.error(err);
             setError("Failed to load passengers.");
@@ -60,23 +63,17 @@ export default function ManagePassengers() {
         }
     }
 
-    /*const filteredPassengers = passengers.filter(p =>
-      `${p.firstName} ${p.lastName}`.toLowerCase().includes(search.toLowerCase())
+    const filteredPassengers = passengers.filter(
+        (p) =>
+            p.firstName.toLowerCase().includes(search.toLowerCase()) ||
+            p.lastName.toLowerCase().includes(search.toLowerCase())
     );
-  
-    const totalPages = Math.max(1, Math.ceil(filteredPassengers.length / rowsPerPage));*/
-
-    const filteredPassengers = passengers.filter(p =>
-        p.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        p.lastName.toLowerCase().includes(search.toLowerCase())
-    );
-
     const totalPages = Math.ceil(filteredPassengers.length / rowsPerPage);
 
     useEffect(() => {
         if (page > totalPages) setPage(totalPages);
         if (page < 1) setPage(1);
-    }, [filteredPassengers.length, totalPages]);
+    }, [totalPages]);
 
     const paginatedPassengers = filteredPassengers.slice(
         (page - 1) * rowsPerPage,
@@ -94,7 +91,9 @@ export default function ManagePassengers() {
         try {
             setLoading(true);
             setError(null);
-            const full = (await apiGet(`/passengers/${passengerRow.passengerId}`)) as any;
+
+            const full = await apiGet(`/passengers/${passengerRow.passengerId}`);
+
             const payload: PassengerRequestDTO = {
                 firstName: full.firstName ?? "",
                 lastName: full.lastName ?? "",
@@ -107,11 +106,14 @@ export default function ManagePassengers() {
                 passportExpiryDate: full.passportExpiryDate ?? "",
                 creditCardNumber: full.creditCardNumber ?? "",
                 numOfBaggage: full.numOfBaggage ?? 0,
+                flightId: full.flightID ?? 0,
             };
+
             setFormMode("edit");
             setEditingId(passengerRow.passengerId);
             setFormData(payload);
             setShowModal(true);
+
         } catch (err) {
             console.error(err);
             setError("Failed to load passenger for editing.");
@@ -120,11 +122,11 @@ export default function ManagePassengers() {
         }
     }
 
-    function handleChange(e: any) {
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: name === "numOfBaggage" ? Number(value) : value
+            [name]: name === "numOfBaggage" ? Number(value) : value,
         }));
     }
 
@@ -135,28 +137,36 @@ export default function ManagePassengers() {
 
         if (formMode === "create") {
             response = await apiPost("/passengers", formData);
+
+            setPassengers(prev => [...prev, {
+                passengerId: response.passengerId,
+                firstName: response.firstName,
+                lastName: response.lastName,
+                flightId: response.flightId,
+            }]);
         } else if (formMode === "edit" && editingId != null) {
             response = await apiPut(`/passengers/${editingId}`, formData);
-        }
 
-        if (!response) return;
-
-        const minimalPassenger: PassengerResponseDTO = {
-            passengerId: response.passengerId,
-            firstName: response.firstName,
-            lastName: response.lastName,
-        };
-
-        if (formMode === "create") {
-            setPassengers(prev => [...prev, minimalPassenger]);
-        } else {
             setPassengers(prev =>
-                prev.map(p => (p.passengerId === editingId ? minimalPassenger : p))
+                prev.map(p => p.passengerId === editingId
+                    ? {
+                        passengerId: response.passengerId,
+                        firstName: response.firstName,
+                        lastName: response.lastName,
+                        flightId: response.flightId
+                    }
+                    : p
+                )
             );
         }
+
+        resetForm();
+        setShowModal(false);
     }
 
-    async function handleSubmit(e: any) {
+
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError(null);
         try {
@@ -175,11 +185,29 @@ export default function ManagePassengers() {
         setEditingId(null);
     }
 
+    async function handleSubmitAdd(e: React.FormEvent) {
+        e.preventDefault();
+
+        try {
+            console.log("Submitting form data:", formData);
+            await apiPost("/passengers", formData);
+            await loadPassengers();
+            setFormData(emptyPassenger);
+            setShowModal(false);
+
+            console.log("Passenger added successfully!");
+
+        } catch (err) {
+            console.error("Error adding passenger:", err);
+            setError("Failed to add Passenger. Please try again, make sure all the informations are crrect.");
+        }
+    }
+
     async function handleDelete(passengerId: number) {
         if (!window.confirm("Are you sure you want to delete this passenger?")) return;
         try {
             await apiDelete(`/passengers/${passengerId}`);
-            setPassengers(prev => prev.filter(p => p.passengerId !== passengerId));
+            setPassengers((prev) => prev.filter((p) => p.passengerId !== passengerId));
         } catch (err) {
             console.error(err);
             setError("Failed to delete passenger.");
@@ -188,27 +216,21 @@ export default function ManagePassengers() {
 
     return (
         <section className="passenger-content-section">
-            <div>
+            <div className="passenger-title">
                 <h2>Passengers</h2>
-
-            </div>
-
-            <div className="passengerSearch">
                 <input
-
+                    className="passengerSearch"
                     placeholder="Search passengers..."
                     value={search}
-                    onChange={e => {
+                    onChange={(e) => {
                         setSearch(e.target.value);
                         setPage(1);
                     }}
                 />
             </div>
-            <div>
-                {loading && <small>Loading…</small>}
-                {error && <small style={{ color: "red" }}>error</small>}
-            </div>
 
+            {loading && <small>Loading Passengers…</small>}
+            {error && <small style={{ color: "red" }}>{error}</small>}
 
             <table className="passengers-table">
                 <thead>
@@ -220,26 +242,27 @@ export default function ManagePassengers() {
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedPassengers.map(p => (
+                    {paginatedPassengers.map((p) => (
                         <tr key={p.passengerId}>
                             <td>{p.passengerId}</td>
                             <td>{p.firstName}</td>
                             <td>{p.lastName}</td>
                             <td>
-                                <div>
-                                    <button onClick={() => handleEdit(p)} style={{ color: "green" }}>
-                                        Edit
-                                    </button>
-                                    <button onClick={() => handleDelete(p.passengerId)} style={{ color: "red" }}>
-                                        Delete
-                                    </button>
-                                </div>
+                                <button onClick={() => handleEdit(p)} style={{ color: "green" }}>
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(p.passengerId)}
+                                    style={{ color: "red" }}
+                                >
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     ))}
                     {paginatedPassengers.length === 0 && (
                         <tr>
-                            <td colSpan={4} style={{ padding: 12, textAlign: "center" }}>
+                            <td colSpan={4} style={{ textAlign: "center", padding: 15 }}>
                                 No passengers
                             </td>
                         </tr>
@@ -247,15 +270,14 @@ export default function ManagePassengers() {
                 </tbody>
             </table>
 
-            {/* pagination */}
             <div className="passenger-pagination-btn">
-                <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+                <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
                     Previous
                 </button>
                 <span>
                     &nbsp;&nbsp;Page {page} / {totalPages}&nbsp;&nbsp;
                 </span>
-                <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>
+                <button disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
                     Next
                 </button>
             </div>
@@ -268,14 +290,19 @@ export default function ManagePassengers() {
                 <div className="Pmodal-overlay">
                     <div className="Pmodal">
                         <div className="Pmodal-header">
-                            <h2>Add Passenger Infomation</h2>
-                            <h3>{formMode === "create" ? "Add Passenger" : "Edit Passenger"}</h3>
-                            <button className="Pmodal-close-btn" onClick={() => { setShowModal(false); resetForm(); }}>✕</button>
+                            <h2>{formMode === "edit" ? "Edit Passenger" : "Add Passenger"}</h2>
+                            <button
+                                className="Pmodal-close-btn"
+                                onClick={() => {
+                                    setShowModal(false);
+                                    resetForm();
+                                }}
+                            >
+                                ✕
+                            </button>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
-
-                            {/* Row 1 */}
+                        <form onSubmit={formMode === "edit" ? handleSubmit : handleSubmitAdd}>
                             <div className="Pmodal-form-row">
                                 <input
                                     className="Pmodal-input"
@@ -285,7 +312,6 @@ export default function ManagePassengers() {
                                     onChange={handleChange}
                                     required
                                 />
-
                                 <input
                                     className="Pmodal-input"
                                     name="lastName"
@@ -294,7 +320,6 @@ export default function ManagePassengers() {
                                     onChange={handleChange}
                                     required
                                 />
-
                                 <input
                                     className="Pmodal-input"
                                     type="date"
@@ -304,7 +329,6 @@ export default function ManagePassengers() {
                                 />
                             </div>
 
-                            {/* Row 2 */}
                             <div className="Pmodal-form-row">
                                 <input
                                     className="Pmodal-input"
@@ -313,7 +337,6 @@ export default function ManagePassengers() {
                                     value={formData.address}
                                     onChange={handleChange}
                                 />
-
                                 <input
                                     className="Pmodal-input"
                                     name="phoneNumber"
@@ -321,7 +344,6 @@ export default function ManagePassengers() {
                                     value={formData.phoneNumber}
                                     onChange={handleChange}
                                 />
-
                                 <input
                                     className="Pmodal-input"
                                     name="email"
@@ -332,16 +354,14 @@ export default function ManagePassengers() {
                                 />
                             </div>
 
-                            {/* Row 3 */}
                             <div className="Pmodal-form-row">
                                 <input
-                                    className="modal-input"
+                                    className="Pmodal-input"
                                     name="passportNumber"
                                     placeholder="Passport Number"
                                     value={formData.passportNumber}
                                     onChange={handleChange}
                                 />
-
                                 <input
                                     className="Pmodal-input"
                                     type="date"
@@ -349,10 +369,6 @@ export default function ManagePassengers() {
                                     value={formData.passportExpiryDate}
                                     onChange={handleChange}
                                 />
-                            </div>
-
-                            {/* Row 4 */}
-                            <div className="Pmodal-form-row">
                                 <input
                                     className="Pmodal-input"
                                     name="creditCardNumber"
@@ -360,39 +376,48 @@ export default function ManagePassengers() {
                                     value={formData.creditCardNumber}
                                     onChange={handleChange}
                                 />
+                            </div>
 
+                            <div className="Pmodal-form-row">
+                                <label className="small-title" htmlFor="flightId">Flight ID: </label>
                                 <input
                                     className="Pmodal-input"
-                                    name="numOfBaggage"
+                                    name="flightId"
+                                    placeholder="Choose your flight id"
+                                    value={formData.flightId}
+                                    onChange={handleChange}
+                                />
+                                <label className="small-title" htmlFor="numOfBaggage">Number of Baggage: </label>
+                                <input
+                                    className="Pmodal-input"
                                     type="number"
-                                    placeholder="Baggage (0-4)"
+                                    name="numOfBaggage"
                                     min={0}
                                     max={4}
+                                    placeholder="Number of Baggage"
                                     value={formData.numOfBaggage}
-                                    onChange={(e) => {
-                                        let n = Number(e.target.value);
-                                        if (n < 0) n = 0;
-                                        if (n > 4) n = 4;
-                                        setFormData(prev => ({ ...prev, numOfBaggage: n }));
-                                    }}
+                                    onChange={handleChange}
                                 />
                             </div>
 
                             <div className="Pmodal-actions">
                                 <button type="submit">
-                                    {formMode === "create" ? "Add" : "Save"}
+                                    {formMode === "edit" ? "Save" : "Add Passenger"}
                                 </button>
-                                <button type="button" onClick={() => { setShowModal(false); resetForm(); }}>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        resetForm();
+                                    }}
+                                >
                                     Cancel
                                 </button>
                             </div>
-
                         </form>
                     </div>
                 </div>
             )}
-
-
         </section>
     );
 }

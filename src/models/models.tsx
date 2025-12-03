@@ -1,5 +1,4 @@
 export interface FlightsRequestDTO{
-    flightId:number; //PK
     airline:string;
     placeDepart:string;
     destination:string;
@@ -8,7 +7,6 @@ export interface FlightsRequestDTO{
     departTime:string;
     arrivalTime:string;
     price:number;
-    internalCode:string;
 
 }
 
@@ -36,11 +34,20 @@ export interface PassengerRequestDTO{
     passportExpiryDate:string;
     creditCardNumber:string;
     numOfBaggage:number;
+    flightId: number;
 }
 
 export interface PassengerResponseDTO{
     passengerId:number;
     firstName:string;
     lastName:string;
+    phoneNumber?: string;
+    email?: string;
+    passportNumber?: string;
+    passportExpiryDate?: string;
+    creditCardNumber?: string;
+    numOfBaggage?: number;
+    flightId: number;
+    flightsSummary?: any[];
     
 }

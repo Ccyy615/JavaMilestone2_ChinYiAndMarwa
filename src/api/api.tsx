@@ -11,6 +11,16 @@ export async function apiGet(path: string) {
  }
 }
 
+export async function apiGetById(path: string, idFlight:number,path2: string) {
+ try {
+ const response = await axios.get(`${BASE}${path}/${idFlight}${path2}`);
+ return response.data; 
+ } catch (error) {
+ console.error("GET request failed:", error);
+ throw error; 
+ }
+}
+
 export async function apiPost(path: string, data?: any) {
  try {
  const response = await axios.post(`${BASE}${path}`, data);
