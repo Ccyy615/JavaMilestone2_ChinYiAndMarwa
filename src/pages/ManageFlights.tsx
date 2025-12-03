@@ -208,8 +208,8 @@ function FlightsPage() {
                 className="flight-search"
                 onChange={(e) => (setSearch(e.target.value))}
             />
-            <button className="btn" onClick={() => setShowModal(true)}>Add</button>
-            <button onClick={goToPreviousPage}>previous</button>
+            <button className="btn" onClick={() => setShowModal(true)}>Add</button>&nbsp;
+            <button onClick={goToPreviousPage}>previous</button>&nbsp;
             <button onClick={goToNextPage}>next</button>
 
 
