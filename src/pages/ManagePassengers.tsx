@@ -250,57 +250,77 @@ export default function ManagePassengers() {
     }
 
     async function handleSubmitEdit(e: React.FormEvent) {
-        e.preventDefault();
-        setError(null);
-        setLoading(true);
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-        try {
-            console.log("Editing passenger:", formData);
-            
-            // Validate required fields
-            if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.flightId) {
-                setError("First name, last name, and flight ID are required");
-                setLoading(false);
-                return;
-            }
-            
-            // Format dates for backend
-            const formattedData = {
-                ...formData,
-                dateOfBirth: formData.dateOfBirth ? formData.dateOfBirth.split('T')[0] : null,
-                passportExpiryDate: formData.passportExpiryDate ? formData.passportExpiryDate.split('T')[0] : null,
-                flightId: Number(formData.flightId),
-                numOfBaggage: Number(formData.numOfBaggage) || 0,
-            };
-            
-            await apiPut(`/passengers/${editingId}`, formattedData);
-            await loadPassengers();
-            setShowModal(false);
-            setFormData(emptyPassenger);
-
-            console.log("Passenger edited successfully!");
-        } catch (err: any) {
-            console.error("Error editing passenger:", err);
-            
-            let errorMessage = "Failed to edit passenger.";
-            if (err.message.includes("Passport is expired")) {
-                errorMessage = "Passport expiry date must be in the future.";
-            } else if (err.message.includes("Invalid Age")) {
-                errorMessage = "Passenger must be at least 18 years old.";
-            } else if (err.message.includes("Flight not found")) {
-                errorMessage = "Invalid Flight ID. Please enter a valid flight ID.";
-            } else if (err.response?.data?.message) {
-                errorMessage = err.response.data.message;
-            } else if (err.message) {
-                errorMessage = err.message;
-            }
-            
-            setError(errorMessage);
-        } finally {
+    try {
+        console.log("Editing passenger:", formData);
+        
+        // Validate required fields
+        if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.flightId) {
+            setError("First name, last name, and flight ID are required");
             setLoading(false);
+            return;
         }
-    }
+        
+        // Format dates for backend
+        const formattedData = {
+            ...formData,
+            dateOfBirth: formData.dateOfBirth ? formData.dateOfBirth.split('T')[0] : null,
+            passportExpiryDate: formData.passportExpiryDate ? formData.passportExpiryDate.split('T')[0] : null,
+            flightId: Number(formData.flightId),
+            numOfBaggage: Number(formData.numOfBaggage) || 0,
+        };
+        
+        // Call API to update
+        const response = await apiPut(`/passengers/${editingId}`, formattedData);
+        console.log("Edit response:", response);
+        
+        // Update the passenger in state WITHOUT reloading all passengers
+        setPassengers(prev => prev.map(p => 
+            p.passengerId === editingId 
+                ? {
+                    ...p,
+                    firstName: response.firstName || formData.firstName,
+                    lastName: response.lastName || formData.lastName,
+                    phoneNumber: response.phoneNumber || formData.phoneNumber,
+                    email: response.email || formData.email,
+                    passportNumber: response.passportNumber || formData.passportNumber,
+                    passportExpiryDate: response.passportExpiryDate || formData.passportExpiryDate,
+                    creditCardNumber: response.creditCardNumber || formData.creditCardNumber,
+                    numOfBaggage: response.numOfBaggage || formData.numOfBaggage,
+                    flightId: response.flightId || formData.flightId,
+                }
+                : p
+        ));
+        
+        setShowModal(false);
+        setFormData(emptyPassenger);
+        setEditingId(null);
 
+        console.log("Passenger edited successfully!");
+    } catch (err: any) {
+        console.error("Error editing passenger:", err);
+        
+        let errorMessage = "Failed to edit passenger.";
+        if (err.message.includes("Passport is expired")) {
+            errorMessage = "Passport expiry date must be in the future.";
+        } else if (err.message.includes("Invalid Age")) {
+            errorMessage = "Passenger must be at least 18 years old.";
+        } else if (err.message.includes("Flight not found")) {
+            errorMessage = "Invalid Flight ID. Please enter a valid flight ID.";
+        } else if (err.response?.data?.message) {
+            errorMessage = err.response.data.message;
+        } else if (err.message) {
+            errorMessage = err.message;
+        }
+        
+        setError(errorMessage);
+    } finally {
+        setLoading(false);
+    }
+}
     async function handleDelete(passengerId: number) {
         if (!window.confirm("Are you sure you want to delete this passenger?")) return;
         try {

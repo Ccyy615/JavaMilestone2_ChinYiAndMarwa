@@ -1,73 +1,64 @@
-# React + TypeScript + Vite
+Flight Management System
+A full-stack web application built with React for frontend, Spring Boot for backend, and PostgreSQL for the database that allows users to manage flights and passengers.
+This project was created for my The Java Web course with Haikel Hichri 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+Frontend (React + TypeScript)
+Search flights by airline, departure city, or destination
+View passengers for each flight
+Add, edit, and delete flights and passengers information
+Add passengers and link them to a flight
+Page navigation using custom components (Home, Flights, Passengers, About)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Backend (Spring Boot)
+REST API with CRUD endpoints for:
+Flights
+Passengers
+CRUD OPERATIONS FOR BOTH
+Add (flight & passenger info)
+Edit (flight & passenger info)
+Delete (flight & passenger)
 
-## React Compiler
+DTOs used for clean request/response
+PostgreSQL database
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Database (PostgreSQL)
+-used render.com to have the PostgreSQL
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Frontend
+React (TypeScript)
+Vite
+Axios for http requests
+CSS
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Backend
+Spring Boot
+Java 17
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Database
+PostgreSQL
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Project Structure
+Components in the project
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Components folder:
+DetailsViews: when button View Details, in the flight page, is clicked the flight shows all their passengers on that specific class
+Footer
+Header
+mainBody: switches the pages in our site
+menu: for the navbar to go through the pages
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Pages folder:
+About
+Home
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+ManageFlights
+ManagePassengers
+
+PassengersPage
+FlightsPage
+
+Hosted
+Backend on render.com
+Frontend render.com

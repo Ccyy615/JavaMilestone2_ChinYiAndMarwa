@@ -398,7 +398,6 @@ p {
   border: 1px solid #ccc;
   border-radius: 6px;
 }
-
 .Pmodal-input:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -796,7 +795,6 @@ p {
   transform: translateY(-2px);
 }
 
-/* Loading State */
 .modal-submit-btn.loading {
   opacity: 0.8;
   cursor: not-allowed;
@@ -928,11 +926,7 @@ p {
     background: linear-gradient(135deg, #8f8bd6 0%, #dedcf8 100%);
   }
   
-  .modal-header h3 {
-    background: linear-gradient(90deg, #a991ff, #c8bfff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+
   
   .modal-content input,
   .modal-content select,
